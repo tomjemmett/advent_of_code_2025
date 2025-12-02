@@ -69,7 +69,8 @@ library
     exposed-modules:
         Days,
         Common,
-        Inputs
+        Inputs,
+        AOCSolution
     other-modules:
         Day01
         Day02

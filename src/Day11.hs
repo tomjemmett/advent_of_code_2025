@@ -1,13 +1,14 @@
 module Day11 where
 
+import AOCSolution (getSolution)
 import Common
 import Inputs (InputType (..), readInput)
 import Text.Parsec qualified as P
 import Text.Parsec.String (Parser)
 
 day11SampleInput, day11ActualInput :: IO (Maybe String)
-day11SampleInput = readInput Sample 1
-day11ActualInput = readInput Actual 1
+day11SampleInput = readInput Sample 11
+day11ActualInput = readInput Actual 11
 
 day11 :: IO ((String, String), (String, String))
 day11 = do

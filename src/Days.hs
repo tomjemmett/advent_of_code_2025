@@ -52,26 +52,26 @@ runDay day = do
   let fn = days !! pred day
 
   ((s1, s2), (a1, a2)) <- fn
-  when (s1 /= "") $ do
+  when (s1 /= "") $ timeIt do
     putStrLn $ replicate 80 '-'
     putStr $ "Day: " ++ show day
     putStrLn ""
 
-    putStrLn "Part 1 Sample:"
-    putStr s1
+    putStr "Part 1 Sample: "
+    putStrLn s1
     putStrLn ""
 
     when (s2 /= "") $ do
-      putStrLn "Part 2 Sample:"
+      putStr "Part 2 Sample: "
       putStrLn s2
       putStrLn ""
 
     when (a1 /= "") $ do
-      putStrLn "Part 1 Actual:"
-      putStr a1
+      putStr "Part 1 Actual: "
+      putStrLn a1
       putStrLn ""
 
     when (a2 /= "") $ do
-      putStrLn "Part 2 Actual:"
+      putStr "Part 2 Actual: "
       putStrLn a2
       putStrLn ""

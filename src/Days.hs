@@ -12,6 +12,8 @@ module Days
     day11,
     day12,
     runDay,
+    downloadInput,
+    readInput,
   )
 where
 

@@ -59,21 +59,23 @@ runDay day = do
     putStr $ "Day: " ++ show day
     putStrLn ""
 
-    putStr "Part 1 Sample: "
+    putStrLn "  Sample:"
+    putStr "    Part 1: "
     putStrLn s1
-    putStrLn ""
 
     when (s2 /= "") $ do
-      putStr "Part 2 Sample: "
+      putStr "    Part 2: "
       putStrLn s2
-      putStrLn ""
+
+    putStrLn ""
 
     when (a1 /= "") $ do
-      putStr "Part 1 Actual: "
+      putStrLn "  Actual:"
+      putStr "    Part 1: "
       putStrLn a1
-      putStrLn ""
 
     when (a2 /= "") $ do
-      putStr "Part 2 Actual: "
+      putStr "    Part 2: "
       putStrLn a2
-      putStrLn ""
+
+    putStrLn ""

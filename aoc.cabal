@@ -95,7 +95,7 @@ executable aoc2025
         http-client-tls,
         http-types
     hs-source-dirs:   app
-    ghc-options: -threaded -rtsopts
+    ghc-options: -threaded -rtsopts -O2
 
 test-suite spec
     import:           shared-properties

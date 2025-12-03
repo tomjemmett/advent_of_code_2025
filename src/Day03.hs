@@ -4,9 +4,8 @@ import AOCSolution (getSolution)
 import Common
 import Data.Char (digitToInt)
 import Data.Function (on)
-import Data.List (maximumBy, tails)
+import Data.List (maximumBy)
 import Inputs (InputType (..), readInput)
-import Text.Parsec qualified as P
 
 day03SampleInput, day03ActualInput :: IO (Maybe String)
 day03SampleInput = readInput Sample 3

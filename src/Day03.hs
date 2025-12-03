@@ -24,11 +24,21 @@ solve = getSolution p (f 2) (f 12)
     p = map (map digitToInt) . lines
 
 makeBest :: Int -> [Int] -> Int
-makeBest n vals = snd $ iterate go (init, 0) !! n
+makeBest n vals = intListToInt $ take n $ go initN vals
   where
-    init = replicate (length vals) False
-    go (ons, _) = maximumBy (compare `on` snd) $ map f ons'
+    initN = length vals - n + 1
+    go :: Int -> [Int] -> [Int]
+    go _ [] = []
+    go n xs = v : go n' xs''
       where
-        tests = cycle $ take (length ons) $ True : repeat False
-        ons' = map (\i -> zipWith (||) (drop i tests) ons) [0 .. length ons - 1]
-        f o = (o, intListToInt $ map snd $ filter fst $ zip o vals)
+        (v, xs') = splitAtMax (take n xs)
+        n' = length xs' + 1
+        xs'' = xs' ++ drop n xs
+
+splitAtMax :: [Int] -> (Int, [Int])
+splitAtMax xs = go (0, xs) xs
+  where
+    go (curMax, after) [] = (curMax, after)
+    go (curMax, after) (y : ys)
+      | y > curMax = go (y, ys) ys
+      | otherwise = go (curMax, after) ys

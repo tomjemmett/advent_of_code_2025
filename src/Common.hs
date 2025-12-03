@@ -34,6 +34,9 @@ data Direction = North | East | South | West deriving (Show, Enum, Eq, Ord)
 instance Hashable Direction where
   hashWithSalt salt = hashWithSalt salt . fromEnum
 
+intListToInt :: [Int] -> Int
+intListToInt = foldl1 (\acc x -> acc * 10 + x)
+
 moveOneStepInDir :: Point2d -> Direction -> Point2d
 moveOneStepInDir (i, j) = \case
   North -> (i - 1, j)

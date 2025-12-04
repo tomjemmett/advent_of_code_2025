@@ -2,8 +2,8 @@ module Day04 where
 
 import AOCSolution (getSolution)
 import Common
-import Control.Monad (guard)
-import Data.HashSet qualified as S
+import Data.Massiv.Array (Ix2 (..))
+import Data.Massiv.Array qualified as A
 import Inputs (InputType (..), readInput)
 
 day04SampleInput, day04ActualInput :: IO (Maybe String)
@@ -17,31 +17,27 @@ day04 = do
   return (s, a)
 
 solve :: String -> (String, String)
-solve = getSolution parseInput part1 part2
+solve = getSolution getIterations part1 part2
 
-parseInput :: String -> S.HashSet Point2d
-parseInput input = S.fromList do
-  (i, line) <- zip [0 ..] $ lines input
-  (j, v) <- zip [0 ..] line
-  guard $ v == '@'
-  pure (i, j)
+part1 :: [Int] -> Int
+part1 = head
 
-canRemove :: S.HashSet Point2d -> S.HashSet Point2d
-canRemove points = S.filter ((< 4) . countNeighbors) points
+part2 :: [Int] -> Int
+part2 = sum . takeWhile (> 0)
+
+getIterations :: String -> [Int]
+getIterations input = zipWith (-) iters (tail iters)
   where
-    countNeighbors :: Point2d -> Int
-    countNeighbors = length . filter (`S.member` points) . point2dNeighboursDiags
+    i = A.fromLists' A.Par . map2 (fromEnum . (== '@')) . lines $ input
+    iters = map A.sum $ iterate update i
 
-part1 :: S.HashSet Point2d -> Int
-part1 = S.size . canRemove
-
-part2 :: S.HashSet Point2d -> Int
-part2 = go
+update :: (A.Manifest r Int) => A.Array r A.Ix2 Int -> A.Array A.U A.Ix2 Int
+update = A.computeP . A.mapStencil (A.Fill 0) stencil
   where
-    go p =
-      if S.null rm
-        then 0
-        else S.size rm + go p'
+    stencil = A.makeStencil (A.Sz (3 :. 3)) (1 :. 1) iter
+    iter get
+      | get (0 :. 0) == 0 = 0
+      | sum s < 4 = 0
+      | otherwise = 1
       where
-        rm = canRemove p
-        p' = S.difference p rm
+        s = [get (y :. x) | y <- [-1 .. 1], x <- [-1 .. 1], (y, x) /= (0, 0)]

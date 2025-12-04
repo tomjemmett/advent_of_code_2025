@@ -30,6 +30,7 @@ common shared-properties
         http-client,
         lens,
         lens-aeson,
+        massiv,
         mtl,
         parallel,
         parsec,

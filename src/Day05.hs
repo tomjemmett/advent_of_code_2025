@@ -31,10 +31,9 @@ parseInput = parse p
     pInterval = (,) <$> (number' <* P.char '-') <*> number'
 
 part1 :: ([(Int, Int)], [Int]) -> Int
-part1 (intervals, values) = countTrue (go intervals) values
+part1 (intervals, values) = countTrue inInterval values
   where
-    go [] x = False
-    go ((lo, hi) : is) x = (lo <= x && x <= hi) || go is x
+    inInterval x = any (\(lo, hi) -> lo <= x && x <= hi) intervals
 
 part2 :: ([(Int, Int)], [Int]) -> Int
 part2 = sum . map (succ . uncurry subtract) . fst

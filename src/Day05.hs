@@ -2,6 +2,7 @@ module Day05 where
 
 import AOCSolution (getSolution)
 import Common
+import Data.List (sort)
 import Inputs (InputType (..), readInput)
 import Text.Parsec qualified as P
 import Text.Parsec.String (Parser)
@@ -17,4 +18,30 @@ day05 = do
   return (s, a)
 
 solve :: String -> (String, String)
-solve = undefined
+solve = getSolution parseInput part1 part2
+
+parseInput :: String -> ([(Int, Int)], [Int])
+parseInput = parse p
+  where
+    p = do
+      intervals <- collapse . sort <$> pInterval `P.sepEndBy` P.newline
+      P.newline
+      numbers <- number' `P.sepEndBy` P.newline
+      return (intervals, numbers)
+    pInterval = (,) <$> (number' <* P.char '-') <*> number'
+
+part1 :: ([(Int, Int)], [Int]) -> Int
+part1 (intervals, values) = countTrue (go intervals) values
+  where
+    go [] x = False
+    go ((lo, hi) : is) x = (lo <= x && x <= hi) || go is x
+
+part2 :: ([(Int, Int)], [Int]) -> Int
+part2 = sum . map (succ . uncurry subtract) . fst
+
+collapse :: [(Int, Int)] -> [(Int, Int)]
+collapse is | length is <= 1 = is
+collapse ((lo1, hi1) : (lo2, hi2) : is) =
+  if hi1 < lo2
+    then (lo1, hi1) : collapse ((lo2, hi2) : is)
+    else collapse $ (lo1, max hi1 hi2) : is

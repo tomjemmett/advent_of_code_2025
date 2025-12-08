@@ -6,7 +6,8 @@ import Control.Monad (when)
 import Control.Monad.State
 import Data.Function (on)
 import Data.HashMap.Strict qualified as M
-import Data.List (sort, sortBy, splitAt)
+import Data.List (sortBy)
+import Data.PQueue.Prio.Min (MinPQueue ((:<)))
 import Data.PQueue.Prio.Min qualified as PQ
 import Inputs (InputType (..), readInput)
 
@@ -29,24 +30,33 @@ parseInput = map (tuplify3 . commaSeparatedInts) . lines
 distance :: (Point3d, Point3d) -> Int
 distance ((x1, y1, z1), (x2, y2, z2)) = (x1 - x2) ^ 2 + (y1 - y2) ^ 2 + (z1 - z2) ^ 2
 
-getEdges :: [Point3d] -> [(Point3d, Point3d)]
-getEdges points = sortBy (compare `on` distance) [(p1, p2) | p1 <- points, p2 <- points, p1 < p2]
+getEdges :: [Point3d] -> PQ.MinPQueue Int (Point3d, Point3d)
+getEdges points =
+  PQ.fromList
+    [ (d, p)
+      | p1 <- points,
+        p2 <- points,
+        p1 < p2,
+        let p = (p1, p2),
+        let d = distance p,
+        d < 15000 ^ 2 -- performance tweak, ignore anything "too" far away
+    ]
 
 run :: Int -> [Point3d] -> (Int, Int)
 run p1N points = (p1, p2)
   where
     -- run the state for part 1 and get the union-find structure for part 2
-    ((tgt, p1), ufP2) = runState (go (length points) edgesP1) ufInit
+    ((tgt, p1), ufP2) = runState (go (length points) (PQ.fromList edgesP1)) ufInit
     -- run the state for part 2
     p2 = snd $ evalState (go tgt edgesP2) ufP2
     -- split edges for part 1 and part 2
-    (edgesP1, edgesP2) = splitAt p1N $ getEdges points
+    (edgesP1, edgesP2) = PQ.splitAt p1N $ getEdges points
     -- initialize union-find structure
     ufInit = M.fromList [(p, p) | p <- points]
-    go :: Int -> [(Point3d, Point3d)] -> State (M.HashMap Point3d Point3d) (Int, Int)
+    go :: Int -> PQ.MinPQueue Int (Point3d, Point3d) -> State (M.HashMap Point3d Point3d) (Int, Int)
     -- specific case for part 1, we have used up all of the edges
-    go tgt [] = (tgt,) . p1Answer <$> forM points unionFind
-    go tgt ((p1, p2) : ps) = do
+    go tgt q | PQ.null q = (tgt,) . p1Answer <$> forM points unionFind
+    go tgt ((_, (p1, p2)) :< ps) = do
       p1f <- unionFind p1
       p2f <- unionFind p2
       let tgt' = if p1f == p2f then tgt else pred tgt

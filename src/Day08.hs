@@ -6,7 +6,8 @@ import Control.Monad (when)
 import Control.Monad.State
 import Data.Function (on)
 import Data.HashMap.Strict qualified as M
-import Data.List (sortBy, splitAt)
+import Data.List (sort, sortBy, splitAt)
+import Data.PQueue.Prio.Min qualified as PQ
 import Inputs (InputType (..), readInput)
 
 day08SampleInput, day08ActualInput :: IO (Maybe String)
@@ -44,13 +45,7 @@ run p1N points = (p1, p2)
     ufInit = M.fromList [(p, p) | p <- points]
     go :: Int -> [(Point3d, Point3d)] -> State (M.HashMap Point3d Point3d) (Int, Int)
     -- specific case for part 1, we have used up all of the edges
-    go tgt [] = do
-      uf <- get
-      vs <- forM points $ \p -> do
-        k <- unionFind p
-        return (k, 1)
-      let sz = map snd $ sortBy (flip compare `on` snd) $ M.toList $ M.fromListWith (+) vs
-      pure (tgt, product $ take 3 sz)
+    go tgt [] = (tgt,) . p1Answer <$> forM points unionFind
     go tgt ((p1, p2) : ps) = do
       p1f <- unionFind p1
       p2f <- unionFind p2
@@ -60,6 +55,15 @@ run p1N points = (p1, p2)
         else do
           when (p1f /= p2f) $ mix p1 p2
           go tgt' ps
+    p1Answer :: [Point3d] -> Int
+    p1Answer =
+      product
+        . take 3
+        . map snd
+        . sortBy (flip compare `on` snd)
+        . M.toList
+        . M.fromListWith (+)
+        . map (,1)
     p2Answer :: Point3d -> Point3d -> Int
     p2Answer (x1, _, _) (x2, _, _) = x1 * x2
 

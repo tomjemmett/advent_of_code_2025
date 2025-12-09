@@ -49,20 +49,21 @@ part1 :: Input -> Int
 part1 = snd . head . rectangles
 
 part2 :: Input -> Int
-part2 (Input {..}) = snd $ fromJust $ find (insidePath path) rectangles
-
-insidePath :: [Point2d] -> ((Point2d, Point2d), Int) -> Bool
-insidePath path (rect, _) = all checkLine (zip path (tail path))
+part2 (Input {..}) = snd $ fromJust $ find insidePath rectangles
   where
-    (rectXmin, rectXmax, rectYmin, rectYmax) = f rect
-    checkLine (f -> (lineXmin, lineXmax, lineYmin, lineYmax)) =
-      or
-        [ lineXmax <= rectXmin,
-          rectXmax <= lineXmin,
-          lineYmax <= rectYmin,
-          rectYmax <= lineYmin
-        ]
-    f ((x1, y1), (x2, y2)) =
+    pathSegments = zipWith getBounds path (tail path)
+    getBounds (x1, y1) (x2, y2) =
       let (xmin, xmax) = if x1 < x2 then (x1, x2) else (x2, x1)
           (ymin, ymax) = if y1 < y2 then (y1, y2) else (y2, y1)
        in (xmin, xmax, ymin, ymax)
+    insidePath :: ((Point2d, Point2d), Int) -> Bool
+    insidePath (rect, _) = all checkLine pathSegments
+      where
+        (rectXmin, rectXmax, rectYmin, rectYmax) = uncurry getBounds rect
+        checkLine (lineXmin, lineXmax, lineYmin, lineYmax) =
+          or
+            [ lineXmax <= rectXmin,
+              rectXmax <= lineXmin,
+              lineYmax <= rectYmin,
+              rectYmax <= lineYmin
+            ]

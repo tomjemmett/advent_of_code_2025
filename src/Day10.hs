@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Day10 where
 
 import AOCSolution (getSolution)
@@ -87,7 +85,7 @@ part2 inputs = sum . map fromJust <$> forM inputs goZ3
 
       -- Create integer variables
       let numButtons = length buttons
-      btns <- forM [1 .. numButtons] (\i -> mkFreshIntVar ctx ('b' : show i))
+      btns <- forM [1 .. numButtons] $ mkFreshIntVar ctx . ('b' :) . show
 
       -- Each press >= 0
       zero <- mkInteger ctx 0

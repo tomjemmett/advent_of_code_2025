@@ -14,10 +14,12 @@ module Days
     runDay,
     downloadInput,
     readInput,
+    fromJust,
   )
 where
 
 import Control.Monad (when)
+import Data.Maybe (fromJust)
 import Day01 (day01)
 import Day02 (day02)
 import Day03 (day03)

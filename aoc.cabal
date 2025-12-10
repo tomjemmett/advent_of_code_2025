@@ -47,6 +47,7 @@ common shared-properties
         utf8-string,
         vector,
         wreq,
+        z3,
         base ^>=4.17.2
     default-extensions:
         BangPatterns

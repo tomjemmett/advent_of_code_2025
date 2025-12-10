@@ -1,20 +1,17 @@
 module Day10 where
 
 import AOCSolution (getSolution)
-import Algorithm.Search
 import Common
-import Control.Monad (forM, forM_, unless, (<=<))
-import Data.Bits (xor)
-import Data.Maybe (catMaybes, fromJust)
-import Data.Traversable qualified as T
+import Control.Monad (forM, forM_, (<=<))
+import Data.Maybe (fromJust)
 import Inputs (InputType (..), readInput)
 import Text.Parsec qualified as P
 import Text.Parsec.String (Parser)
 import Z3.Base
 
 data Input = Input
-  { lights :: Int,
-    buttons :: [[Int]],
+  { buttons :: [[Int]],
+    lights :: [Int],
     jolts :: [Int]
   }
   deriving (Show)
@@ -34,8 +31,8 @@ solve input = case input of
   Nothing -> return ("", "")
   Just input -> do
     let i = parseInput input
-    p1 <- part1 i
-    p2 <- part2 i
+    p1 <- part lights (Just 2) i
+    p2 <- part jolts Nothing i
     return (show p1, show p2)
 
 parseInput :: String -> [Input]
@@ -43,65 +40,57 @@ parseInput = parse (p `P.sepEndBy` P.newline)
   where
     p :: Parser Input
     p = do
-      light <- P.between (P.char '[') (P.char ']') (P.many $ P.oneOf ".#")
+      light <- pLight
       P.char ' '
       buttons <- pButton `P.sepEndBy` P.char ' '
-      jolts <- P.between (P.char '{') (P.char '}') pNums
-      pure $ mkInput light buttons jolts
+      jolts <- between '{' '}' pNums
+      pure $ Input buttons light jolts
+    between :: Char -> Char -> Parser a -> Parser a
+    between s e = P.between (P.char s) (P.char e)
+    pLight :: Parser [Int]
+    pLight = do
+      xs <- between '[' ']' (P.many $ P.oneOf ".#")
+      pure $ map (\case '#' -> 1; _ -> 0) xs
     pButton :: Parser [Int]
-    pButton = P.between (P.char '(') (P.char ')') pNums
+    pButton = between '(' ')' pNums
     pNums :: Parser [Int]
     pNums = number `P.sepBy` P.char ','
 
-mkInput :: String -> [[Int]] -> [Int] -> Input
-mkInput light = Input light'
+part :: (Input -> [Int]) -> Maybe Integer -> [Input] -> IO Int
+part constraintFn modValue = fmap sum . mapM goZ3
   where
-    light' = lightStringToInt light
-
-lightStringToInt :: String -> Int
-lightStringToInt = foldl f 0 . reverse
-  where
-    f acc = \case
-      '.' -> acc * 2
-      '#' -> acc * 2 + 1
-
-part1 :: [Input] -> IO Int
-part1 = pure . sum . map go
-  where
-    go (Input {..}) = fst $ fromJust $ dijkstra nfn (const . const 1) (== lights) 0
-      where
-        buttons' = map (sum . map (2 ^)) buttons
-        nfn :: Int -> [Int]
-        nfn s = map (xor s) buttons'
-
-part2 :: [Input] -> IO Int
-part2 inputs = sum . map fromJust <$> forM inputs goZ3
-  where
-    goZ3 :: Input -> IO (Maybe Int)
-    goZ3 (Input {..}) = do
+    goZ3 :: Input -> IO Int
+    goZ3 input = do
       cfg <- mkConfig
       ctx <- mkContext cfg
       opt <- mkOptimize ctx
 
       -- Create integer variables
-      let numButtons = length buttons
-      btns <- forM [1 .. numButtons] $ mkFreshIntVar ctx . ('b' :) . show
+      let btns = buttons input
+          num = length btns
+      vars <- forM [1 .. num] $ mkFreshIntVar ctx . ('x' :) . show
 
       -- Each press >= 0
       zero <- mkInteger ctx 0
-      forM_ btns $ optimizeAssert ctx opt <=< flip (mkGe ctx) zero
+      forM_ vars $ optimizeAssert ctx opt <=< flip (mkGe ctx) zero
 
-      -- For each joltage constraint
-      forM_ (zip [0 ..] jolts) $ \(i, joltage) -> do
-        let relevantPresses = [press | (press, button) <- zip btns buttons, i `elem` button]
-        unless (null relevantPresses) $ do
-          sumExpr <- mkAdd ctx relevantPresses
-          targetExpr <- mkInteger ctx (fromIntegral joltage)
-          eq <- mkEq ctx sumExpr targetExpr
-          optimizeAssert ctx opt eq
+      -- For each constraint
+      forM_ (zip [0 ..] $ constraintFn input) $ \(i, target) -> do
+        sumExpr <- mkAdd ctx $ map fst $ filter (elem i . snd) $ zip vars btns
+
+        -- for part 1, we are modulo 2, for part 2 any integer is valid
+        finalExpr <- case modValue of
+          Just n -> do
+            modN <- mkInteger ctx n
+            mkMod ctx sumExpr modN
+          Nothing -> return sumExpr
+
+        targetExpr <- mkInteger ctx (fromIntegral target)
+        eq <- mkEq ctx finalExpr targetExpr
+        optimizeAssert ctx opt eq
 
       -- Minimize sum of presses
-      totalPresses <- mkAdd ctx btns
+      totalPresses <- mkAdd ctx vars
       optimizeMinimize ctx opt totalPresses
 
       -- Check and get solution
@@ -109,6 +98,6 @@ part2 inputs = sum . map fromJust <$> forM inputs goZ3
       if result == Sat
         then do
           model <- optimizeGetModel ctx opt
-          values <- sequence <$> mapM (evalInt ctx model) btns
-          return $ sum . map fromIntegral <$> values
-        else return Nothing
+          values <- sequence <$> mapM (evalInt ctx model) vars
+          return $ fromIntegral $ sum $ fromJust values
+        else error $ "No solution found for input: " ++ show input

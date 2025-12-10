@@ -111,6 +111,6 @@ part2 inputs = sum . map fromJust <$> forM inputs goZ3
       if result == Sat
         then do
           model <- optimizeGetModel ctx opt
-          values <- mapM (evalInt ctx model) btns
-          return $ Just $ sum $ map (fromIntegral . fromJust) values
+          values <- sequence <$> mapM (evalInt ctx model) btns
+          return $ sum . map fromIntegral <$> values
         else return Nothing

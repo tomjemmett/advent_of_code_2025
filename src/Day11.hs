@@ -35,13 +35,13 @@ parseInput = M.fromList . parse (pLine `P.sepEndBy` P.newline)
     pName = P.many P.alphaNum
 
 part1 :: M.HashMap String [String] -> Int
-part1 i = go "you"
-  where
-    go "out" = 1
-    go p = sum $ map go $ i M.! p
+part1 = find 0 "you"
 
 part2 :: M.HashMap String [String] -> Int
-part2 i = evalState (go 2 "svr") M.empty
+part2 = find 2 "svr"
+
+find :: Int -> String -> M.HashMap String [String] -> Int
+find v s i = evalState (go v s) M.empty
   where
     go :: Int -> String -> State (M.HashMap (Int, String) Int) Int
     go v "out" = pure $ fromEnum (v == 0)

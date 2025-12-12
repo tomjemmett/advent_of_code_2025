@@ -7,7 +7,7 @@ spec = describe "Day 12" $ do
   (sample, actual) <- runIO day12
 
   it "Sample" $ do
-    sample `shouldBe` ("", "")
+    sample `shouldBe` ("2", "")
 
   it "Actual" $ do
-    actual `shouldBe` ("", "")
+    actual `shouldBe` ("454", "")

@@ -21,6 +21,9 @@ day08 = do
   a <- maybe ("", "") (solve 1000) <$> day08ActualInput
   return (s, a)
 
+-- >>> day08
+-- (("40","25272"),("115885","274150525"))
+
 solve :: Int -> String -> (String, String)
 solve p1n = getSolution (run p1n . parseInput) fst snd
 

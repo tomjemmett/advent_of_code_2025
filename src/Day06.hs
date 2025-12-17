@@ -19,6 +19,9 @@ day06 = do
   a <- maybe ("", "") solve <$> day06ActualInput
   return (s, a)
 
+-- >>> day06
+-- (("4277556","3263827"),("6635273135233","12542543681221"))
+
 solve :: String -> (String, String)
 solve = getSolution parseInput part1 part2
 

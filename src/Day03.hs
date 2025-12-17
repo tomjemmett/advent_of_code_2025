@@ -17,6 +17,9 @@ day03 = do
   a <- maybe ("", "") solve <$> day03ActualInput
   return (s, a)
 
+-- >>> day03
+-- (("357","3121910778619"),("17085","169408143086082"))
+
 solve :: String -> (String, String)
 solve = getSolution p (f 2) (f 12)
   where

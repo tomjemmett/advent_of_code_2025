@@ -26,6 +26,9 @@ day10 = do
   a <- solve <$> day10ActualInput
   (,) <$> s <*> a
 
+-- >>> day10
+-- (("7","33"),("432","18011"))
+
 solve :: Maybe String -> IO (String, String)
 solve input = case input of
   Nothing -> return ("", "")

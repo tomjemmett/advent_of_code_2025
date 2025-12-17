@@ -15,6 +15,9 @@ day01 = do
   a <- maybe ("", "") solve <$> day01ActualInput
   return (s, a)
 
+-- >>> day01
+-- (("3","6"),("1036","6228"))
+
 solve :: String -> (String, String)
 solve = bimap show show . fst . foldl rotate ((0, 0), 50) . parseInput
 

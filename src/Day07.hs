@@ -19,6 +19,9 @@ day07 = do
   a <- maybe ("", "") solve <$> day07ActualInput
   return (s, a)
 
+-- >>> day07
+-- (("21","40"),("1562","24292631346665"))
+
 solve :: String -> (String, String)
 solve = getSolution (runTachyons . parseInput) fst snd
 

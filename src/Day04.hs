@@ -16,6 +16,9 @@ day04 = do
   a <- maybe ("", "") solve <$> day04ActualInput
   return (s, a)
 
+-- >>> day04
+-- (("13","43"),("1457","8310"))
+
 solve :: String -> (String, String)
 solve = getSolution getIterations part1 part2
 

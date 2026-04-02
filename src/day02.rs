@@ -1,16 +1,13 @@
 use std::collections::HashSet;
 use std::fs;
 
-pub fn run(file_type: &str) {
+pub fn run(file_type: &str) -> Option<(String, String)> {
     let contents = fs::read_to_string(format!("inputs/{}/02.txt", file_type))
         .expect("Should have been able to read the file");
 
     let input = &parse_input(&contents);
 
-    println!("Day  2 {}:", file_type);
-    println!("  Part 1: {}", part1(input));
-    println!("  Part 2: {}", part2(input));
-    println!();
+    Some((part1(input).to_string(), part2(input).to_string()))
 }
 
 fn parse_input(input: &str) -> Vec<(u128, u128)> {

@@ -1,15 +1,12 @@
 use std::fs;
 
-pub fn run(file_type: &str) {
+pub fn run(file_type: &str) -> Option<(String, String)> {
     let contents = fs::read_to_string(format!("inputs/{}/03.txt", file_type))
         .expect("Should have been able to read the file");
 
     let input = &parse_input(&contents);
 
-    println!("Day  3 {}:", file_type);
-    println!("  Part 1: {}", solve(input, 2));
-    println!("  Part 2: {}", solve(input, 12));
-    println!();
+    Some((solve(input, 2).to_string(), solve(input, 12).to_string()))
 }
 
 fn parse_input(input: &str) -> Vec<Vec<u64>> {

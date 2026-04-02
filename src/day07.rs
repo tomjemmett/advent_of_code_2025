@@ -1,11 +1,10 @@
-pub fn run(_file_type: &str) {
-    // let contents = fs::read_to_string(format!("inputs/{}/07.txt", file_type))
-    //     .expect("Should have been able to read the file");
+use std::fs;
 
-    // let input = &parse_input(&contents);
-
-    // println!("Day  7 {}:", file_type);
-    // println!("  Part 1: {}", part1(input));
-    // println!("  Part 2: {}", part2(input));
-    // println!();
+pub fn run(file_type: &str) -> Option<(String, String)> {
+    if let Ok(_contents) = fs::read_to_string(format!("inputs/{}/07.txt", file_type)) {
+        // let input = &parse_input(&contents);
+        panic!("Not implemented");
+    } else {
+        None
+    }
 }

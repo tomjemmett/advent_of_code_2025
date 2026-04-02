@@ -1,4 +1,5 @@
 use std::env;
+use std::time::Instant;
 
 mod day01;
 mod day02;
@@ -13,6 +14,7 @@ mod day10;
 mod day11;
 mod day12;
 
+#[derive(PartialEq, Eq)]
 enum InputKind {
     Both,
     Sample,
@@ -20,6 +22,7 @@ enum InputKind {
 }
 
 fn main() {
+    let start = Instant::now();
     let args: Vec<String> = env::args().collect();
 
     // check for a named argument --actual or --sample
@@ -56,6 +59,8 @@ fn main() {
     } else {
         (1..=12).for_each(|day| run(day, &input_kind));
     }
+
+    println!("Total runtime: {:?}", start.elapsed());
 }
 
 fn run(d: u32, input_kind: &InputKind) {
@@ -75,12 +80,29 @@ fn run(d: u32, input_kind: &InputKind) {
         _ => panic!("Invalid day number"),
     };
 
-    match input_kind {
-        InputKind::Both => {
-            dayfn("sample");
-            dayfn("actual");
+    if input_kind != &InputKind::Actual {
+        let start = Instant::now();
+
+        if let Some((p1, p2)) = dayfn("sample") {
+            let duration = start.elapsed();
+
+            println!("Day {:2} Sample ({:?}):", d, duration);
+            println!("  Part 1: {}", p1);
+            println!("  Part 2: {}", p2);
+            println!();
         }
-        InputKind::Sample => dayfn("sample"),
-        InputKind::Actual => dayfn("actual"),
+    }
+
+    if input_kind != &InputKind::Sample {
+        let start = Instant::now();
+
+        if let Some((p1, p2)) = dayfn("actual") {
+            let duration = start.elapsed();
+
+            println!("Day {:2} Actual ({:?}):", d, duration);
+            println!("  Part 1: {}", p1);
+            println!("  Part 2: {}", p2);
+            println!();
+        }
     }
 }

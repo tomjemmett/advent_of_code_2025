@@ -48,7 +48,7 @@ common shared-properties
         vector,
         wreq,
         z3,
-        base ^>=4.17.2
+        base ^>=4.18
     default-extensions:
         BangPatterns
         BlockArguments

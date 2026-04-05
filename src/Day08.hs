@@ -2,7 +2,7 @@ module Day08 where
 
 import AOCSolution (getSolution)
 import Common
-import Control.Monad (when)
+import Control.Monad (forM, when)
 import Control.Monad.State
 import Data.Function (on)
 import Data.HashMap.Strict qualified as M

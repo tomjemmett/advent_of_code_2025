@@ -2,12 +2,11 @@ module Day10 where
 
 import AOCSolution (getSolution)
 import Common
-import Control.Monad (forM, forM_, (<=<))
-import Data.Maybe (fromJust)
+import Control.Monad (forM, forM_)
+import Data.SBV (OptimizeResult (LexicographicResult), OptimizeStyle (Lexicographic), constrain, getModelValue, minimize, optimize, sInteger, sMod, (.==), (.>=))
 import Inputs (InputType (..), readInput)
 import Text.Parsec qualified as P
 import Text.Parsec.String (Parser)
-import Z3.Base
 
 data Input = Input
   { buttons :: [[Int]],
@@ -60,47 +59,29 @@ parseInput = parse (p `P.sepEndBy` P.newline)
     pNums = number `P.sepBy` P.char ','
 
 part :: (Input -> [Int]) -> Maybe Integer -> [Input] -> IO Int
-part constraintFn modValue = fmap sum . mapM goZ3
+part constraintFn modValue = fmap sum . mapM goSBV
   where
-    goZ3 :: Input -> IO Int
-    goZ3 input = do
-      cfg <- mkConfig
-      ctx <- mkContext cfg
-      opt <- mkOptimize ctx
+    goSBV :: Input -> IO Int
+    goSBV input =
+      optimize Lexicographic do
+        let btns = buttons input
+            num = length btns
+        vars <- forM [1 .. num] $ \n -> sInteger ("x" ++ show n)
 
-      -- Create integer variables
-      let btns = buttons input
-          num = length btns
-      vars <- forM [1 .. num] $ mkFreshIntVar ctx . ('x' :) . show
+        forM_ vars $ \v -> constrain $ v .>= 0
 
-      -- Each press >= 0
-      zero <- mkInteger ctx 0
-      forM_ vars $ optimizeAssert ctx opt <=< flip (mkGe ctx) zero
+        forM_ (zip [0 ..] $ constraintFn input) $ \(i, target) -> do
+          let sumExpr = sum $ map fst $ filter (elem i . snd) $ zip vars btns
+              finalExpr = case modValue of
+                Just n -> sumExpr `sMod` fromIntegral n
+                Nothing -> sumExpr
+          constrain $ finalExpr .== fromIntegral target
 
-      -- For each constraint
-      forM_ (zip [0 ..] $ constraintFn input) $ \(i, target) -> do
-        sumExpr <- mkAdd ctx $ map fst $ filter (elem i . snd) $ zip vars btns
-
-        -- for part 1, we are modulo 2, for part 2 any integer is valid
-        finalExpr <- case modValue of
-          Just n -> do
-            modN <- mkInteger ctx n
-            mkMod ctx sumExpr modN
-          Nothing -> return sumExpr
-
-        targetExpr <- mkInteger ctx (fromIntegral target)
-        eq <- mkEq ctx finalExpr targetExpr
-        optimizeAssert ctx opt eq
-
-      -- Minimize sum of presses
-      totalPresses <- mkAdd ctx vars
-      optimizeMinimize ctx opt totalPresses
-
-      -- Check and get solution
-      result <- optimizeCheck ctx opt []
-      if result == Sat
-        then do
-          model <- optimizeGetModel ctx opt
-          values <- sequence <$> mapM (evalInt ctx model) vars
-          return $ fromIntegral $ sum $ fromJust values
-        else error $ "No solution found for input: " ++ show input
+        let totalPresses = sum vars
+        minimize "total_presses" totalPresses
+        >>= \case
+          LexicographicResult model ->
+            case getModelValue "total_presses" model :: Maybe Integer of
+              Just total -> pure $ fromIntegral total
+              Nothing -> error $ "No solution found for input: " ++ show input
+          _ -> error $ "No solution found for input: " ++ show input

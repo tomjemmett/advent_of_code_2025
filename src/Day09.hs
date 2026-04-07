@@ -40,9 +40,9 @@ getAllRectangles points =
   sortBy
     (flip compare `on` snd)
     [ ((p1, p2), getRectangleAreas p1 p2)
-      | p1 <- points,
-        p2 <- points,
-        p1 < p2
+    | p1 <- points,
+      p2 <- points,
+      p1 < p2
     ]
 
 getRectangleAreas :: Point2d -> Point2d -> Int

@@ -37,12 +37,12 @@ getEdges :: [Point3d] -> PQ.MinPQueue Int (Point3d, Point3d)
 getEdges points =
   PQ.fromList
     [ (d, p)
-      | p1 <- points,
-        p2 <- points,
-        p1 < p2,
-        let p = (p1, p2),
-        let d = distance p,
-        d < 15000 ^ 2 -- performance tweak, ignore anything "too" far away
+    | p1 <- points,
+      p2 <- points,
+      p1 < p2,
+      let p = (p1, p2),
+      let d = distance p,
+      d < 15000 ^ 2 -- performance tweak, ignore anything "too" far away
     ]
 
 run :: Int -> [Point3d] -> (Int, Int)

@@ -26,7 +26,7 @@ fn main() {
     let start = Instant::now();
     let args: Vec<String> = env::args().collect();
 
-    if args[1] == "download" {
+    if args.len() > 1 && args[1] == "download" {
         if args.len() < 3 {
             panic!("Must provide a day when downloading inputs");
         }

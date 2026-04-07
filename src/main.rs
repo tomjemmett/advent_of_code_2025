@@ -13,6 +13,7 @@ mod day09;
 mod day10;
 mod day11;
 mod day12;
+mod download_inputs;
 
 #[derive(PartialEq, Eq)]
 enum InputKind {
@@ -24,6 +25,22 @@ enum InputKind {
 fn main() {
     let start = Instant::now();
     let args: Vec<String> = env::args().collect();
+
+    if args[1] == "download" {
+        if args.len() < 3 {
+            panic!("Must provide a day when downloading inputs");
+        }
+
+        let day = args[2].parse().expect("Should be able to parse day number");
+
+        if day < 1 || day > 12 {
+            panic!("Day number must be between 1 and 12");
+        }
+
+        download_inputs::download_inputs(day).expect("Failed to download inputs");
+
+        return;
+    }
 
     // check for a named argument --actual or --sample
     // if either is present, only run that one, otherwise run both

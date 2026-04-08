@@ -7,6 +7,9 @@ edition = "2024"
 clap = { version = "4", features = ["derive"] }
 dotenvy = "0.15"
 itertools = "0.14.0"
+memoize = "0.6.0"
+nom = "8.0.0"
 priority-queue = "2.7.0"
+rayon = "1.11.0"
 reqwest = { version = "0.12", features = ["blocking", "rustls-tls"] }
 scraper = "0.24"

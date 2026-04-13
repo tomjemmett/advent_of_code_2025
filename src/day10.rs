@@ -150,7 +150,7 @@ fn patterns(coeffs: &Vec<Vec<u32>>) -> HashMap<Vec<u32>, HashMap<Vec<u32>, u32>>
             let parity_pattern = pattern.iter().map(|x| x % 2).collect::<Vec<u32>>();
 
             out.entry(parity_pattern)
-                .or_insert_with(HashMap::new)
+                .or_default()
                 .entry(pattern)
                 .or_insert(num_pressed_buttons as u32);
         }
@@ -213,5 +213,5 @@ fn part_2(row: &Row) -> u32 {
     }
 
     let mut memo = HashMap::new();
-    solve(row.jolts.clone(), &pattern_costs, &mut memo)
+    solve(row.jolts.clone(), pattern_costs, &mut memo)
 }

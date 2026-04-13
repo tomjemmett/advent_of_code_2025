@@ -79,7 +79,7 @@ fn build_edges(points: &[Point3d]) -> PriorityQueue<(Point3d, Point3d), Reverse<
         for &p2 in &points[i + 1..] {
             if p1 != p2 {
                 let d = p1.distance(&p2);
-                const MAX_DISTANCE: u64 = (15000 as u64).pow(2);
+                const MAX_DISTANCE: u64 = 15000_u64.pow(2);
                 if d < MAX_DISTANCE {
                     edges.push((p1, p2), Reverse(d));
                 }

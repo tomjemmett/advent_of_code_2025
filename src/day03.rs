@@ -34,7 +34,7 @@ fn parse_input(input: &str) -> Vec<Vec<u64>> {
 fn solve(input: &Vec<Vec<u64>>, length: usize) -> u64 {
     input
         .iter()
-        .map(|bank| make_best(length, bank) as u64)
+        .map(|bank| make_best(length, bank))
         .sum()
 }
 

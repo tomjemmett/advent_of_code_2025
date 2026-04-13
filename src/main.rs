@@ -33,7 +33,7 @@ fn main() {
 
         let day = args[2].parse().expect("Should be able to parse day number");
 
-        if day < 1 || day > 12 {
+        if !(1..=12).contains(&day) {
             panic!("Day number must be between 1 and 12");
         }
 

@@ -46,7 +46,7 @@ fn part1(input: &Vec<(&str, u32)>) -> i32 {
 
         ctr += if pos == 0 { 1 } else { 0 };
     }
-    return ctr;
+    ctr
 }
 
 fn part2(input: &Vec<(&str, u32)>) -> i32 {
@@ -65,5 +65,5 @@ fn part2(input: &Vec<(&str, u32)>) -> i32 {
             ctr += if pos == 0 { 1 } else { 0 };
         }
     }
-    return ctr;
+    ctr
 }

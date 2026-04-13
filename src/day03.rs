@@ -31,11 +31,8 @@ fn parse_input(input: &str) -> Vec<Vec<u64>> {
         .collect::<Vec<Vec<u64>>>()
 }
 
-fn solve(input: &Vec<Vec<u64>>, length: usize) -> u64 {
-    input
-        .iter()
-        .map(|bank| make_best(length, bank))
-        .sum()
+fn solve(input: &[Vec<u64>], length: usize) -> u64 {
+    input.iter().map(|bank| make_best(length, bank)).sum()
 }
 
 fn make_best(length: usize, vals: &Vec<u64>) -> u64 {

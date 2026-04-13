@@ -112,7 +112,7 @@ fn parse_input(input: &str) -> IResult<&str, Vec<Row>> {
     separated_list1(newline, parse_row).parse(input)
 }
 
-fn patterns(coeffs: &Vec<Vec<u32>>) -> HashMap<Vec<u32>, HashMap<Vec<u32>, u32>> {
+fn patterns(coeffs: &[Vec<u32>]) -> HashMap<Vec<u32>, HashMap<Vec<u32>, u32>> {
     if coeffs.is_empty() {
         return HashMap::new();
     }

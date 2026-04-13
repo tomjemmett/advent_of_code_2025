@@ -9,6 +9,17 @@ struct State {
     end: usize,
 }
 
+/// Sample
+/// ```
+/// use advent_of_code_2025::{check_day_output, day07::run};
+/// check_day_output!(run, "sample", "21", "40");
+/// ```
+///
+/// Actual
+/// ```
+/// use advent_of_code_2025::{check_day_output, day07::run};
+/// check_day_output!(run, "actual", "1562", "24292631346665");
+/// ```
 pub fn run(file_type: &str) -> Option<(String, String)> {
     if let Ok(contents) = fs::read_to_string(format!("inputs/{}/07.txt", file_type)) {
         let input = contents.lines().collect::<Vec<&str>>();

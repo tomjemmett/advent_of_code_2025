@@ -1,19 +1,19 @@
 use std::env;
 use std::time::Instant;
 
-mod day01;
-mod day02;
-mod day03;
-mod day04;
-mod day05;
-mod day06;
-mod day07;
-mod day08;
-mod day09;
-mod day10;
-mod day11;
-mod day12;
-mod download_inputs;
+use advent_of_code_2025::day01;
+use advent_of_code_2025::day02;
+use advent_of_code_2025::day03;
+use advent_of_code_2025::day04;
+use advent_of_code_2025::day05;
+use advent_of_code_2025::day06;
+use advent_of_code_2025::day07;
+use advent_of_code_2025::day08;
+use advent_of_code_2025::day09;
+use advent_of_code_2025::day10;
+use advent_of_code_2025::day11;
+use advent_of_code_2025::day12;
+use advent_of_code_2025::download_inputs;
 
 #[derive(PartialEq, Eq)]
 enum InputKind {

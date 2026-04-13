@@ -1,6 +1,17 @@
 use std::collections::HashSet;
 use std::fs;
 
+/// Sample
+/// ```
+/// use advent_of_code_2025::{check_day_output, day02::run};
+/// check_day_output!(run, "sample", "1227775554", "4174379265");
+/// ```
+///
+/// Actual
+/// ```
+/// use advent_of_code_2025::{check_day_output, day02::run};
+/// check_day_output!(run, "actual", "18893502033", "26202168557");
+/// ```
 pub fn run(file_type: &str) -> Option<(String, String)> {
     let contents = fs::read_to_string(format!("inputs/{}/02.txt", file_type))
         .expect("Should have been able to read the file");

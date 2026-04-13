@@ -16,6 +16,17 @@ impl Interval {
     }
 }
 
+/// Sample
+/// ```
+/// use advent_of_code_2025::{check_day_output, day05::run};
+/// check_day_output!(run, "sample", "3", "14");
+/// ```
+///
+/// Actual
+/// ```
+/// use advent_of_code_2025::{check_day_output, day05::run};
+/// check_day_output!(run, "actual", "862", "357907198933892");
+/// ```
 pub fn run(file_type: &str) -> Option<(String, String)> {
     if let Ok(contents) = fs::read_to_string(format!("inputs/{}/05.txt", file_type)) {
         let input = parse_input(&contents);

@@ -7,6 +7,17 @@ struct Grid {
     width: isize,
 }
 
+/// Sample
+/// ```
+/// use advent_of_code_2025::{check_day_output, day04::run};
+/// check_day_output!(run, "sample", "13", "43");
+/// ```
+///
+/// Actual
+/// ```
+/// use advent_of_code_2025::{check_day_output, day04::run};
+/// check_day_output!(run, "actual", "1457", "8310");
+/// ```
 pub fn run(file_type: &str) -> Option<(String, String)> {
     if let Ok(contents) = fs::read_to_string(format!("inputs/{}/04.txt", file_type)) {
         let mut input = parse_input(&contents);

@@ -1,6 +1,17 @@
 use std::collections::HashMap;
 use std::fs;
 
+/// Sample
+/// ```
+/// use advent_of_code_2025::{check_day_output, day11::run};
+/// check_day_output!(run, "sample", "1", "2");
+/// ```
+///
+/// Actual
+/// ```
+/// use advent_of_code_2025::{check_day_output, day11::run};
+/// check_day_output!(run, "actual", "428", "331468292364745");
+/// ```
 pub fn run(file_type: &str) -> Option<(String, String)> {
     if let Ok(contents) = fs::read_to_string(format!("inputs/{}/11.txt", file_type)) {
         let input = parse_input(&contents);

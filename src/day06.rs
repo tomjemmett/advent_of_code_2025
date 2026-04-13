@@ -1,5 +1,16 @@
 use std::fs;
 
+/// Sample
+/// ```
+/// use advent_of_code_2025::{check_day_output, day06::run};
+/// check_day_output!(run, "sample", "4277556", "3263827");
+/// ```
+///
+/// Actual
+/// ```
+/// use advent_of_code_2025::{check_day_output, day06::run};
+/// check_day_output!(run, "actual", "6635273135233", "12542543681221");
+/// ```
 pub fn run(file_type: &str) -> Option<(String, String)> {
     if let Ok(contents) = fs::read_to_string(format!("inputs/{}/06.txt", file_type)) {
         let input = parse_input(&contents);

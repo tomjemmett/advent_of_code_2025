@@ -1,5 +1,16 @@
 use std::fs;
 
+/// Sample
+/// ```
+/// use advent_of_code_2025::{check_day_output, day01::run};
+/// check_day_output!(run, "sample", "3", "6");
+/// ```
+///
+/// Actual
+/// ```
+/// use advent_of_code_2025::{check_day_output, day01::run};
+/// check_day_output!(run, "actual", "1036", "6228");
+/// ```
 pub fn run(file_type: &str) -> Option<(String, String)> {
     let contents = fs::read_to_string(format!("inputs/{}/01.txt", file_type))
         .expect("Should have been able to read the file");

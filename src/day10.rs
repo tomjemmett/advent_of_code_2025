@@ -18,6 +18,17 @@ struct Row {
     button_press_costs: HashMap<Vec<u32>, HashMap<Vec<u32>, u32>>,
 }
 
+/// Sample
+/// ```
+/// use advent_of_code_2025::{check_day_output, day10::run};
+/// check_day_output!(run, "sample", "7", "33");
+/// ```
+///
+/// Actual
+/// ```
+/// use advent_of_code_2025::{check_day_output, day10::run};
+/// check_day_output!(run, "actual", "432", "18011");
+/// ```
 pub fn run(file_type: &str) -> Option<(String, String)> {
     if let Ok(contents) = fs::read_to_string(format!("inputs/{}/10.txt", file_type)) {
         let (_, input) = &parse_input(&contents).unwrap();

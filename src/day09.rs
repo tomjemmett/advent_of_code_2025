@@ -76,6 +76,17 @@ impl Rectangle {
     }
 }
 
+/// Sample
+/// ```
+/// use advent_of_code_2025::{check_day_output, day09::run};
+/// check_day_output!(run, "sample", "50", "24");
+/// ```
+///
+/// Actual
+/// ```
+/// use advent_of_code_2025::{check_day_output, day09::run};
+/// check_day_output!(run, "actual", "4777409595", "1473551379");
+/// ```
 pub fn run(file_type: &str) -> Option<(String, String)> {
     if let Ok(contents) = fs::read_to_string(format!("inputs/{}/09.txt", file_type)) {
         let (line_segments, mut pq) = parse_input(&contents);

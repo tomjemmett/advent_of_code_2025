@@ -18,6 +18,17 @@ impl Point3d {
     }
 }
 
+/// Sample
+/// ```
+/// use advent_of_code_2025::{check_day_output, day08::run};
+/// check_day_output!(run, "sample", "40", "25272");
+/// ```
+///
+/// Actual
+/// ```
+/// use advent_of_code_2025::{check_day_output, day08::run};
+/// check_day_output!(run, "actual", "115885", "274150525");
+/// ```
 pub fn run(file_type: &str) -> Option<(String, String)> {
     if let Ok(contents) = fs::read_to_string(format!("inputs/{}/08.txt", file_type)) {
         let input = &parse_input(&contents);
